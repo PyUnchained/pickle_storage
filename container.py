@@ -1,6 +1,7 @@
 import pathlib
 import uuid
 import time
+import shutil
 
 from pickle_storage.config import storage_settings
 from pickle_storage.utils import db_relative_path, write_to_log
@@ -9,7 +10,17 @@ from pickle_storage.operations import Write, Read
 class BaseStorageContainer():
 
     def __init__(self, *args, **kwargs):
+        self.setup()
 
+    def clear(self):
+        shutil.rmtree(self.data_dir)
+        self.setup()
+
+    def read(self, *args, **kwargs):
+        th = Read(*args, **kwargs)
+        return th.join()
+
+    def setup(self):
         # Confirm directory exists
         db_folder_path = pathlib.Path(
             storage_settings.PICKLE_STORAGE_WORKING_DIRECTORY)
@@ -23,7 +34,6 @@ class BaseStorageContainer():
         if not signing_key_path.exists():
             Write(signing_key_path, uuid.uuid4().bytes, secure=False)
 
-
     def write(self, *args, wait=False, **kwargs):
         th = Write(*args, **kwargs)
         if wait:
@@ -31,7 +41,5 @@ class BaseStorageContainer():
         return th
             
 
-    def read(self, *args, **kwargs):
-        th = Read(*args, **kwargs)
-        return th.join()
+
 

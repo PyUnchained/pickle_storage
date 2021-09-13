@@ -2,7 +2,6 @@ import unittest
 import os
 import time
 import pathlib
-import shutil
 
 from pickle_storage.errors import ConfigError, ForbiddenFileError
 from pickle_storage.config import ConfigObject
