@@ -1,45 +1,48 @@
 import hmac
 import pathlib
 import hashlib
+import uuid
+import pickle
 
-from kivy_tastypie.config import orm_settings
-from kivy_tastypie.utils import write_to_log
+from pickle_storage.config import storage_settings
+from pickle_storage.utils import write_to_log, db_relative_path
 
 class HMACMixin():
     """ Provides methods used to more securely pickle binary data using the
     pathlib and hmac libraries """
+    hashing_algorithm = hashlib.sha256
 
     def __init__(self, *args, **kwargs):
         self.__cached_key = None
         super().__init__(*args, **kwargs)
         
-
     @property
     def data_dir(self):
-        return pathlib.Path(orm_settings.DB_FOLDER_PATH)
+        return pathlib.Path(storage_settings.PICKLE_STORAGE_WORKING_DIRECTORY)
+
+    @property
+    def key_file(self):
+        return db_relative_path(
+            storage_settings.PICKLE_STORAGE_SIGNING_KEY_FILENAME)
 
     @property
     def _signing_key(self):
         """ Secret key used to create digests """
 
         if not self.__cached_key:
-            try:
-                file_path = orm_settings.PICKLE_SIGNING_KEY_FILEPATH
-                with file_path.open('r') as f:
-                    key_str = f.read().encode('utf-8')
-                self.__cached_key = key_str
-                return key_str
-            except:
-                write_to_log(f'DB signing key not found at {file_path}',
-                             level='warning', include_traceback=True)
+            with self.key_file.open('rb') as f:
+                self.__cached_key = pickle.loads(f.read())
+            return self.__cached_key
         else:
             return self.__cached_key
 
     def hmac_digest(self, content):
         """ Create digest of binary data """
-        return hmac.new(self._signing_key, content, hashlib.sha256).digest()
+        
+        return hmac.new(self._signing_key, content,
+                        self.hashing_algorithm).digest()
 
     def is_safe(self, digest, content):
         """ Verify that content is as expected. """
-        test_digest = self.hmac_digest(content)
-        return hmac.compare_digest(digest, test_digest)
+        
+        return hmac.compare_digest(digest, self.hmac_digest(content))
