@@ -2,8 +2,8 @@
 
 from distutils.core import setup
 
-setup(name='Distutils',
-      version='1.0',
+setup(name='pickle_storage',
+      version='0.1',
       description='Python Pickle-Based Data Storage',
       author='Tatenda Tambo',
       author_email='tatendatambo@gmail.com',
