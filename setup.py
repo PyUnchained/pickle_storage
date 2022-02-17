@@ -7,5 +7,5 @@ setup(name='Distutils',
       description='Python Pickle-Based Data Storage',
       author='Tatenda Tambo',
       author_email='tatendatambo@gmail.com',
-      packages=['distutils', 'distutils.command', 'config'],
+      packages=['config'],
       )
