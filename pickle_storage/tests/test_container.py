@@ -9,6 +9,8 @@ from pickle_storage.config import ConfigObject
 from pickle_storage.utils import write_to_log, db_relative_path
 from pickle_storage.config import storage_settings
 
+__all__ = ['StorageContainerTestCase']
+
 class StorageContainerTestCase(unittest.TestCase):
 
     def test_hot_settings_update(self):

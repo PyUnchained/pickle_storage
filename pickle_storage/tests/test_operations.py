@@ -5,6 +5,8 @@ import functools
 from pickle_storage.operations import BaseStorageOperation
 from pickle_storage.utils import write_to_log
 
+__all__ = ['StorageContainerTestCase']
+
 class StorageContainerTestCase(unittest.TestCase):
 
     def test_base_operation(self):
