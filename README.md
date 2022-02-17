@@ -1,4 +1,4 @@
-# Pickle-based Binary Data Storage
+# Python Pickle-Based Data Storage
 
 Based on the concept of storage containers used with the Kivy platform, this package allows users a convenient way to read and write arbitrary Python data using the pickle library. 
 
