@@ -7,5 +7,5 @@ setup(name='pickle-storage',
       description='Python Pickle-Based Data Storage',
       author='Tatenda Tambo',
       author_email='tatendatambo@gmail.com',
-      packages=['pickle-storage'],
+      packages=['pickle_storage'],
       )
