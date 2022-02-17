@@ -43,9 +43,8 @@ def db_relative_path(target_path, is_dir=False):
     if isinstance(target_path, str):
         target_path = pathlib.Path(target_path)
 
-    # Ensure the correct suffix
     if not is_dir:
-        if target_path.suffix != storage_settings.PICKLE_STORAGE_SUFFIX:
+        if not target_path.suffix:
             file_name = target_path.parts[-1]
             target_path = target_path.with_name(
                 f"{file_name}{storage_settings.PICKLE_STORAGE_SUFFIX}")
@@ -85,12 +84,10 @@ class Timer():
         write_to_log(f"Elapsed time{self.name}: {elapsed_time} seconds")
 
 
-
-def write_to_log(msg, *extra_msg_args, level = 'warning', limit = 20,  include_traceback = False):
+def write_to_log(msg, *extra_msg_args, level = 'info', limit = 20,  include_traceback = False,
+    log_tag="PickleStorageLog"):
     now = datetime.datetime.now().strftime('%d %b %H:%M:%S')
     msg = str(msg)
-    if 'PickleStorageLog:' not in msg:
-        msg = f'PickleStorageLog: {msg}'
     for extra_arg in extra_msg_args:
         msg +=  '\n' + str(extra_arg)
 
@@ -99,11 +96,18 @@ def write_to_log(msg, *extra_msg_args, level = 'warning', limit = 20,  include_t
     for summary in traceback.extract_stack(limit = limit):
         outside_utils = 'pickle_storage/utils.py' not in summary.filename
         if re.search(logging_re_pattern, summary.line) and outside_utils:
-            extra_details = f'PickleStorageLog: Log call at {summary.filename} {summary.lineno} ({now})'
+            short_filename = "/".join(summary.filename.split('/')[6:])
+            extra_details = f'{log_tag}: {short_filename} {summary.lineno} ({now})'
 
     if include_traceback or level == 'error':
         extra_details = extra_details + '\n\n' + traceback.format_exc()
 
     if extra_details:
-        log_call(extra_details)
+        if not re.match(f'{log_tag}:*', extra_details):
+            extra_details = f'{log_tag}: ' + extra_details
+        log_call(extra_details + '\n' + msg)
+        return
+
+    if not re.match(f'{log_tag}:*', msg):
+        msg = f'{log_tag}: ' + msg
     log_call(msg)

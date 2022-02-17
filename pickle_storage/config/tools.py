@@ -7,6 +7,8 @@ import importlib
 from pickle_storage.errors import ConfigError
 from pickle_storage.utils import write_to_log, import_class
 
+__all__ = ['ConfigObject', 'storage_settings', 'import_class']
+
 class ConfigObject():
     """ Respresents the current settings specified for the pickle_storage package. """
     

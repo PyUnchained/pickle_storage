@@ -1,5 +1,6 @@
 .*
 data_dir/
+test_data_dir/
 htmlcov/
 __pycache__/
 *.pyc

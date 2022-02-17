@@ -12,8 +12,6 @@ class BaseStorageOperation(threading.Thread):
     id_iterator = itertools.count()
 
     def __init__(self, *args, **kwargs):
-
-        # Set default values
         self._return = False
         self.thread_id = next(self.id_iterator)
         kwargs['name'] = f"{self.__class__.__name__}-{self.thread_id}"
@@ -52,6 +50,7 @@ class Write(HMACMixin, BaseStorageOperation):
     
 
     def __init__(self, path='', content=None, *args, secure=True, **kwargs):
+
         self.content = content
         if path:
             self.path = db_relative_path(path)

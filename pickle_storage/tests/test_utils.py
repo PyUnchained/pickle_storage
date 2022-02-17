@@ -4,11 +4,10 @@ import time
 import pathlib
 
 from pickle_storage.utils import db_relative_path, write_to_log, timeit, Timer, import_class
-from pickle_storage.config import storage_settings
+from pickle_storage.config import storage_settings, ConfigObject
 from pickle_storage.mixins import HMACMixin
 
-class UtilsTestCase(unittest.TestCase):
-        
+class UtilsTestCase(unittest.TestCase):        
 
     def test_db_relative_path(self):
         storage_path = pathlib.Path(
@@ -49,3 +48,7 @@ class UtilsTestCase(unittest.TestCase):
             timed_function()
 
 
+class ConfigTestCase(unittest.TestCase):
+
+    def test_config_class(self, *args, **kwargs):
+        config_obj = ConfigObject(user_defined_settings=None)

@@ -36,8 +36,10 @@ class StorageContainerTestCase(unittest.TestCase):
         self.assertEqual(test_data, read_data)
         self.assertFalse(test_storage.read('unsecure_data')) # Should not be readable
 
-
         # Test badly configured Write operation
         self.assertFalse(test_storage.write(wait=True))
         self.assertFalse(test_storage.read())
+
+        test_storage.clear()
+        self.assertEqual(list(test_storage.contents()), [])
 
