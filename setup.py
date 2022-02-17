@@ -8,4 +8,5 @@ setup(name='pickle-storage',
       author='Tatenda Tambo',
       author_email='tatendatambo@gmail.com',
       packages=['pickle_storage'],
+      install_requires=['wrapt>=1.12.1']
       )
