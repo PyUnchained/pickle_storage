@@ -7,6 +7,7 @@ setup(name='pickle-storage',
       description='Python Pickle-Based Data Storage',
       author='Tatenda Tambo',
       author_email='tatendatambo@gmail.com',
-      packages=['pickle_storage'],
+      packages=['pickle_storage', 'pickle_storage.config', 'pickle-storage.utils',
+            'pickle_storage.tests'],
       install_requires=['wrapt>=1.12.1']
       )
