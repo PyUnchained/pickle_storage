@@ -65,11 +65,11 @@ class Timer():
         """Stop the context manager timer"""
         self.stop()
 
-    def __init__(self, name = None):
+    def __init__(self, name = ''):
         if name:
-            self.name = f' ({name})'
-        else:
-            self.name = ''
+            name = f' ({name})'
+            
+        self.name = name
         self._start_time = None
 
     def start(self):

@@ -40,6 +40,11 @@ class StorageContainerTestCase(unittest.TestCase):
         self.assertFalse(test_storage.write(wait=True))
         self.assertFalse(test_storage.read())
 
-        test_storage.clear()
+        self.assertTrue(isinstance(test_storage.archive(),
+            pathlib.Path))
+        # Find any available compression_format, even if the one specified is not
+        self.assertTrue(isinstance(test_storage.archive(compression_format="tgth"),
+            pathlib.Path)) 
+        self.assertTrue(test_storage.clear())
         self.assertEqual(list(test_storage.contents()), [])
 

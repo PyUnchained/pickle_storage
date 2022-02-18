@@ -2,6 +2,7 @@ import pathlib
 import uuid
 import time
 import shutil
+import datetime
 
 from pickle_storage.config import storage_settings
 from pickle_storage.utils import db_relative_path, write_to_log
@@ -16,9 +17,30 @@ class BaseStorageContainer():
             storage_settings.PICKLE_STORAGE_SIGNING_KEY_FILENAME))
         self.setup()
 
+    def archive(self, *args, target=None, compression_format="gztar",
+        time_format='%d_%m_%y_%H_%M_%S'):
+
+        # Specified format may not always be avaiable.
+        format_options = [ x[0] for x in shutil.get_archive_formats()]
+        if compression_format not in format_options:
+            compression_format = format_options[0]
+
+        file_name = datetime.datetime.strftime(datetime.datetime.now(),
+            time_format)
+        source = pathlib.Path(storage_settings.PICKLE_STORAGE_WORKING_DIRECTORY)
+
+        if not target:
+            target = pathlib.Path(
+                storage_settings.PICKLE_STORAGE_WORKING_DIRECTORY,
+                '_archive', file_name)
+
+        shutil.make_archive(target, compression_format, source)
+        return target
+
     def clear(self):
         shutil.rmtree(self.working_dir_path)
         self.setup()
+        return True
 
     def contents(self):
         signing_key_path_with_ext = "".join([
@@ -40,7 +62,7 @@ class BaseStorageContainer():
 
     def create_signing_key(self):
         """ Create the key used to validate data integrity on subsequent reads/writes. """
-        
+
         if not self.signing_key_path.exists():
             Write(self.signing_key_path, uuid.uuid4().bytes, secure=False).join()
 

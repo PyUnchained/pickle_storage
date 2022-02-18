@@ -16,7 +16,7 @@ class ConfigObject():
         #Find default settings module
         self.user_defined_settings = user_defined_settings
         settings_modules = []
-        settings_modules.append(importlib.import_module('pickle_storage.config.defaults'))
+        settings_modules.append('pickle_storage.config.defaults')
 
         # Attempt to import user defined settings
         if not self.user_defined_settings:
@@ -26,13 +26,20 @@ class ConfigObject():
             settings_modules.append(importlib.import_module(
                 self.user_defined_settings))
 
-        # Set attributes depending on the contents of the settings modules,
-        # overriding any defaults
         for module in settings_modules:
-            for setting_name in dir(module):
-                if setting_name.isupper():
-                    setattr(self, setting_name,
-                            getattr(module, setting_name))
+            self.apply_from_module(module)
+
+    def apply_from_module(self, module):
+        """ Set attributes depending on the contents of given module. """
+
+        # May need to still be imported if a string
+        if isinstance(module, str):
+            module = importlib.import_module(module)
+
+        for setting_name in dir(module):
+            if setting_name.isupper():
+                setattr(self, setting_name,
+                        getattr(module, setting_name))
 
 
     @functools.cached_property    

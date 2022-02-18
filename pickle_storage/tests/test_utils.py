@@ -52,3 +52,4 @@ class ConfigTestCase(unittest.TestCase):
 
     def test_config_class(self, *args, **kwargs):
         config_obj = ConfigObject(user_defined_settings=None)
+        config_obj.apply_from_module('pickle_storage.tests.dummy_settings')
